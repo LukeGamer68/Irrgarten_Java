@@ -177,7 +177,6 @@ public class Labyrinth {
         
         return output;
     }
-    //esta posiblemente mal!
     
     private boolean PosOk(int row, int col){
         boolean ok;

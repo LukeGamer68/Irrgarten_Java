@@ -39,7 +39,6 @@ public class Game {
     }
     
     public boolean nextStept(Directions preferredDirection){
-        String log ="";
         boolean dead = this.currentPlayer.Dead();
         
         if(!dead){
