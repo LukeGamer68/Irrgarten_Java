@@ -66,7 +66,7 @@ public class Player {
         return number;
     }
     
-    public void SetPos(int row, int col){
+    private void SetPos(int row, int col){
         if(row<0)
             this.row=-1;
         else
@@ -128,12 +128,14 @@ public class Player {
         
         msg = name + '\n' + "integillence " +this.integillence + '\n';
         msg += "health " + this.health + '\n' + "streght " + this.strenght+ '\n';
-        msg += "Row " + this.row + " Col " +this.col;
+        msg += "Row " + this.row + " Col " +this.col+'\n';
+        msg+="Weapons: "+'\n';
         for(Weapon w: this.weapons){
-            msg+=this.weapons.toString();
+            msg+=this.weapons.toString()+'\n';
         }
+        msg+="Shields: "+'\n';
         for(Shield s: this.shields){
-            msg+=this.shields.toString();
+            msg+=this.shields.toString()+'\n';
         }
         
         return msg;

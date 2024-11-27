@@ -206,7 +206,7 @@ public class Labyrinth {
     }
     
     private boolean CanStepOn(int row, int col){
-        return PosOk(row,col) && (EmptyPos(row,col) || ExitPos(row,col));
+        return PosOk(row,col) || (EmptyPos(row,col) || ExitPos(row,col)) || MonsterPos(row,col);
        
     }
     
