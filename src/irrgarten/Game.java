@@ -3,12 +3,6 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
 package irrgarten;
-import irrgarten.Player;
-import irrgarten.Monster;
-import irrgarten.GameState;
-import irrgarten.GameCharacter;
-import irrgarten.Labyrinth;
-import irrgarten.Directions;
 
 import java.util.ArrayList;
 /**

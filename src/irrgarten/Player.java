@@ -13,58 +13,53 @@ import irrgarten.Dice;
  *
  * @author herna
  */
-public class Player {
+public class Player extends LabyrinthCharacter{
     static private int MAX_WEAPONS = 2;
     static private int MAX_SHIELDS = 3;
     static private int INITIAL_HEALTH = 10;
     static private int HITS2LOSE = 3;
-    //++++++++++++++++++++//
-    private String name;
+
+    private int consecutivehits;
     private char number;
-    //++++++++++++++++++++//
-    private float integillence;
-    private float health;
-    private float strenght;
-    //++++++++++++++++++++//
-    private int row;
-    private int col;
-    //++++++++++++++++++++//
-    private int consecutivehits; //esto cambialo al constructor
-    //+++++++++++++++++++++//
+
     private ArrayList<Weapon> weapons;
     private ArrayList<Shield> shields;
     
     public Player(char number,float intelligence,float strenght){
+        super("Player # " + number,intelligence,strenght,INITIAL_HEALTH);
+        this.number = number;
+        this.consecutivehits=0;
+    }
+    public Player(Player other){
+        super(other.getName(),other.getIntelligence(), other.getStrength(), other.getHealth());
+    }
+    public void resurrect(){
+        weapons.clear();
+        shields.clear();    
+        setHealth(INITIAL_HEALTH);
         this.consecutivehits = 0;
+       
+    }
+     public Directions move(Directions direction, Directions[] validMoves){
+        int size = validMoves.length;
+        boolean contained = false;
         
-        this.number= number;
-        this.name = "Player#" + number;
-        this.integillence=intelligence;
-        this.strenght=strenght;
-        
-        this.health= Player.INITIAL_HEALTH;
-        this.row=-1;
-        this.col=-1;
-        
-        this.weapons = new ArrayList<>();
-        this.shields = new ArrayList<>();
+        for (Directions d: validMoves){
+            if (d == direction){
+                contained = true;
+                break;
+            }
+        }
+        if (size > 0 && !contained){
+            return validMoves[0];
+        } else {
+            return direction;
+        }
     }
-    
-    public void Resurect(){
-        if (Dice.resurrectPlayer())
-            health=INITIAL_HEALTH;
-    }
-    public int getCol(){
-        return col;
-    }
-    
-    public int getRow(){
-        return row;
-    }
-            
     public char GetNumber(){
         return number;
     }
+<<<<<<< Updated upstream
     
     private void SetPos(int row, int col){
         if(row<0)
@@ -75,33 +70,14 @@ public class Player {
             this.col=-1;
         else
             this.col=col;
+=======
+    @Override
+    public float attack(){
+       return getStrength() + sumWeapons();
+>>>>>>> Stashed changes
     }
-    
-    public boolean Dead(){
-         return (health <= 0);
-    }
-    
-    public Directions move(Directions direction,ArrayList<Directions> validMoves){
-        int size= validMoves.size();
-        boolean contained = validMoves.contains(direction);
-        
-        if(size > 0 && !contained){
-            Directions firtsElement = validMoves.get(0);
-            return(firtsElement);
-        }else{
-            return(direction);
-        }
-    }
-    
-    public float Attack(){
-        float ataque=0.0f;
-        
-        ataque = this.strenght + this.sumWeapons();
-        
-        return ataque;
-    }
-    
-    public boolean Defend(float recivedAttack){
+    @Override
+    public boolean defend(float recivedAttack){
         return ManageHit(recivedAttack);
     }
     
@@ -119,9 +95,10 @@ public class Player {
         }
         
         float extrahealth = Dice.healthReward();
-        this.health +=extrahealth;
+        setHealth(getHealth()+extrahealth);
         
     }
+<<<<<<< Updated upstream
         
     public String To_String(){
         String msg;
@@ -139,36 +116,45 @@ public class Player {
         }
         
         return msg;
+=======
+    @Override
+    public String toString(){
+        return "Player " + super.toString() + 
+               "\nWeapons: " + weapons.toString() + 
+               "\nShields: " + shields.toString() +
+               " \nSum Weapons: " + sumWeapons() + 
+               " Sum Shields: " + sumShields();
+>>>>>>> Stashed changes
     }
     
     private void ReciveWeapon(Weapon w){
-        for(int i= this.weapons.size()-1;i>=0;i--){
-            Weapon wi = this.weapons.get(i);
-            
+        for (int i = 0; i < weapons.size(); i++){
+            Weapon wi = weapons.get(i);
             boolean discard = wi.discard();
-            if(discard){
-                weapons.remove(wi);
+            if (discard){
+                weapons.remove(i);
+                i--;
             }
         }
         int size = weapons.size();
-            
-        if(size < Player.MAX_WEAPONS)
+        if (size < MAX_WEAPONS){
             weapons.add(w);
+        }
     }
     
     private void ReciveShield(Shield s){
-        for(int i= this.shields.size()-1;i>=0;i--){
-            Shield si = this.shields.get(i);
-            
+       for (int i = 0; i < shields.size(); i++){
+            Shield si = shields.get(i);
             boolean discard = si.discard();
-            if(discard){
-                weapons.remove(si);
+            if (discard){
+                shields.remove(i);
+                i--;
             }
         }
         int size = shields.size();
-            
-        if(size < Player.MAX_SHIELDS)
+        if (size < MAX_SHIELDS){
             shields.add(s);
+        }
     }
     
     private Weapon NewWeapon(){
@@ -182,7 +168,7 @@ public class Player {
         return e;
     }
     
-    private float sumWeapons(){
+    protected float sumWeapons(){
         float sumatorio = 0.0f;
         
         for(Weapon w: this.weapons){
@@ -191,7 +177,7 @@ public class Player {
         return sumatorio;
     }
     
-    private float sumShields(){
+    protected float sumShields(){
          float sumatorio = 0.0f;
         
         for(Shield s: this.shields){
@@ -200,42 +186,33 @@ public class Player {
         return sumatorio;
     }
     
-    private float DefensiveEnergy(){
-        float sumaInt=0.0f;
-        
-        sumaInt= this.integillence + this.sumShields();
-        
-        return sumaInt;
+    protected float DefensiveEnergy(){
+        return getIntelligence() + sumShields();
     }
     
     private boolean ManageHit(float ReciveAttack){
-        boolean lose=false;
-        float defense = this.DefensiveEnergy();
-        if(defense < ReciveAttack){
-            this.GotWounded();
-            this.IncConsecutiveHits();
-        }else{
-            this.ResetHits();
+         float defense = DefensiveEnergy();
+        boolean lose;
+        if (defense < ReciveAttack){
+            gotWounded();
+            IncConsecutiveHits();
+        } else {
+            resetHits();
         }
-        
-        if(this.consecutivehits == Player.HITS2LOSE || this.Dead()){
-            lose=true;
-        }else{
-            lose=false;
+        if ((this.consecutivehits == HITS2LOSE) || dead()){
+            resetHits();
+            lose = true;
+        } else{
+            lose = false;
         }
         return lose;
     }
     
-    private void ResetHits(){
+    private void resetHits(){
         this.consecutivehits=0;
     }
     
-    private void GotWounded(){
-         if(this.health > 0)
-            this.health--;
-    }
-    
     private void IncConsecutiveHits(){
-        
+        this.consecutivehits++;
     }
 }
