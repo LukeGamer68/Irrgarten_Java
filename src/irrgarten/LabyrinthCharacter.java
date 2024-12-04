@@ -8,7 +8,7 @@ package irrgarten;
  *
  * @author herna
  */
-public class LabyrinthCharacter {
+public abstract class LabyrinthCharacter {
     
     private String name;
     private float intelligence, strength, health;
@@ -29,7 +29,7 @@ public class LabyrinthCharacter {
         this.row = other.row;
         this.col = other.col;
     }
-    public Boolean dead (){
+    public Boolean dead(){
         return this.health <= 0;
     }
     public int getRow(){
@@ -55,11 +55,11 @@ public class LabyrinthCharacter {
     }
     public void SetPos(int row, int col){
         if(row<0)
-            this.row=-1;
+            this.row=0;
         else
             this.row=row;
         if(col<0)
-            this.col=-1;
+            this.col=0;
         else
             this.col=col;
     }
@@ -74,20 +74,8 @@ public class LabyrinthCharacter {
     protected void gotWounded(){
         this.health--;
     }
-    public float attack(){
-        return Dice.intensity(this.strength);
-    }
+    public abstract float attack();
        
-    public boolean defend(float attack){
-        boolean isDead=dead();
-        if(!isDead){
-            float defensiveEnergy = Dice.intensity(this.intelligence);
-            if(defensiveEnergy < attack){
-                gotWounded();
-                isDead=dead();
-            }
-        }    
-        return isDead;
-    }
+    public abstract boolean defend(float attack);
 }
 

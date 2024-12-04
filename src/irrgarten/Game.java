@@ -15,6 +15,7 @@ public class Game {
     //+++++++++++++++++++++++++++++++++//
     private int currentPlayerIndex;
     private Player currentPlayer;
+    private int nplayers;
     
     private ArrayList<Player> players;
     private ArrayList<Monster> monsters;
@@ -26,6 +27,8 @@ public class Game {
         this.players = new ArrayList<>(nplayers);
         this.monsters = new ArrayList<>();
         labyrinth =new Labyrinth(9,9,7,4);
+        this.currentPlayerIndex=0;
+        this.nplayers =nplayers;
     }
     
     public boolean finished(){
@@ -34,7 +37,8 @@ public class Game {
     
     public boolean nextStept(Directions preferredDirection){
         String log ="";
-        boolean dead = this.currentPlayer.Dead();
+        this.currentPlayer=this.players.get(this.currentPlayerIndex);
+        boolean dead = this.currentPlayer.dead();
         
         if(!dead){
            Directions direction = actualDirection(preferredDirection);
@@ -74,10 +78,10 @@ public class Game {
         
         
         for(Monster m: this.monsters){
-            mons += m.To_String();
+            mons += m.toString();
         }
         for(Player p: this.players){
-            plays += p.To_String();
+            plays += p.toString();
         }
         String lab =this.labyrinth.To_String();
         GameState temp;
@@ -148,36 +152,33 @@ public class Game {
     }
     
     private Directions actualDirection(Directions preferredDirection){
-        int currentRow = this.currentPlayer.getRow();
-        int currentCol = this.currentPlayer.getCol();
+        int currentRow = currentPlayer.getRow();
+        int currentCol = currentPlayer.getCol();
         
-       ArrayList<Directions> ValidMoves = this.labyrinth.ValidMoves(currentRow, currentCol);
-        
-       Directions output = this.currentPlayer.move(preferredDirection, ValidMoves);
-        
-       return output;
+        ArrayList<Directions> validMoves = this.labyrinth.ValidMoves(currentRow, currentCol);
+        return currentPlayer.move(preferredDirection, validMoves);
     }
     
     private GameCharacter combat(Monster monster){
         int rounds =0;
         GameCharacter winner = GameCharacter.PLAYER;
-        float playerAttack = this.currentPlayer.Attack();
+        float playerAttack = this.currentPlayer.attack();
         
-        boolean lose = monster.Defend(playerAttack);
+        boolean lose = monster.defend(playerAttack);
         
         while(!lose && rounds > Game.MAX_ROUNDS){
             winner = GameCharacter.MONSTER;
             
             float monsterAttack = monster.attack();
             
-            lose = this.currentPlayer.Defend(monsterAttack);
+            lose = this.currentPlayer.defend(monsterAttack);
             
             if(!lose){
-                playerAttack = this.currentPlayer.Attack();
+                playerAttack = this.currentPlayer.attack();
                 
                 winner = GameCharacter.PLAYER;
                 
-                lose = monster.Defend(playerAttack);
+                lose = monster.defend(playerAttack);
                 
             }
             rounds++;
@@ -202,13 +203,19 @@ public class Game {
         boolean resurrect = Dice.resurrectPlayer();
         
         if(resurrect){
-            this.currentPlayer.Resurect();
+            this.currentPlayer.resurrect();
             logResurrected();
         }else{
             logPlayerSkipTurn();
         }
     }
-    
+    public void AddPlayer(Player player){
+       
+        if(this.players.size() + 1 <= this.nplayers){
+           this.players.add(player);
+           this.labyrinth.AddPlayer(player);
+        }
+    }
     private void logPlayerWon(){
         this.log+="Jugador "+this.currentPlayer+" ha ganado el combate"+'\n';
     }
@@ -230,5 +237,8 @@ public class Game {
     }
     private void logRounds(int rounds,int max){
         this.log+="Se han producido "+rounds+" de "+ max + " de combate"+'\n';
+    }
+     public Player getCurrentPlayer(){
+        return currentPlayer;
     }
 }

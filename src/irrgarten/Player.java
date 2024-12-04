@@ -5,10 +5,6 @@
 package irrgarten;
 import java.util.ArrayList;
 
-import irrgarten.Weapon;
-import irrgarten.Shield;
-import irrgarten.Directions;
-import irrgarten.Dice;
 /**
  *
  * @author herna
@@ -29,6 +25,8 @@ public class Player extends LabyrinthCharacter{
         super("Player # " + number,intelligence,strenght,INITIAL_HEALTH);
         this.number = number;
         this.consecutivehits=0;
+        this.weapons = new ArrayList<>();
+        this.shields = new ArrayList<>();
     }
     public Player(Player other){
         super(other.getName(),other.getIntelligence(), other.getStrength(), other.getHealth());
@@ -37,11 +35,11 @@ public class Player extends LabyrinthCharacter{
         weapons.clear();
         shields.clear();    
         setHealth(INITIAL_HEALTH);
-        this.consecutivehits = 0;
-       
+        this.consecutivehits = 0; 
     }
-     public Directions move(Directions direction, Directions[] validMoves){
-        int size = validMoves.length;
+    
+     public Directions move(Directions direction, ArrayList<Directions> validMoves){
+        int size = validMoves.size();
         boolean contained = false;
         
         for (Directions d: validMoves){
@@ -51,7 +49,7 @@ public class Player extends LabyrinthCharacter{
             }
         }
         if (size > 0 && !contained){
-            return validMoves[0];
+            return validMoves.get(0);
         } else {
             return direction;
         }
@@ -59,22 +57,10 @@ public class Player extends LabyrinthCharacter{
     public char GetNumber(){
         return number;
     }
-<<<<<<< Updated upstream
-    
-    private void SetPos(int row, int col){
-        if(row<0)
-            this.row=-1;
-        else
-            this.row=row;
-        if(col<0)
-            this.col=-1;
-        else
-            this.col=col;
-=======
     @Override
     public float attack(){
        return getStrength() + sumWeapons();
->>>>>>> Stashed changes
+
     }
     @Override
     public boolean defend(float recivedAttack){
@@ -98,33 +84,20 @@ public class Player extends LabyrinthCharacter{
         setHealth(getHealth()+extrahealth);
         
     }
-<<<<<<< Updated upstream
         
-    public String To_String(){
-        String msg;
-        
-        msg = name + '\n' + "integillence " +this.integillence + '\n';
-        msg += "health " + this.health + '\n' + "streght " + this.strenght+ '\n';
-        msg += "Row " + this.row + " Col " +this.col+'\n';
-        msg+="Weapons: "+'\n';
-        for(Weapon w: this.weapons){
-            msg+=this.weapons.toString()+'\n';
+
+    @Override
+    public String toString(){
+        String msg= "Player " + super.toString(); 
+        if(!weapons.isEmpty()){
+            msg+="\nWeapons: " + weapons.toString()+" \nSum Weapons: " + sumWeapons();
         }
-        msg+="Shields: "+'\n';
-        for(Shield s: this.shields){
-            msg+=this.shields.toString()+'\n';
+        if(!shields.isEmpty()){
+            msg+="\nShields: " + shields.toString()+ " Sum Shields: " + sumShields();;
         }
         
         return msg;
-=======
-    @Override
-    public String toString(){
-        return "Player " + super.toString() + 
-               "\nWeapons: " + weapons.toString() + 
-               "\nShields: " + shields.toString() +
-               " \nSum Weapons: " + sumWeapons() + 
-               " Sum Shields: " + sumShields();
->>>>>>> Stashed changes
+              
     }
     
     private void ReciveWeapon(Weapon w){

@@ -50,7 +50,13 @@ public class TextUI {
         return direction;
     }
     
-    public void showGame(GameState gameState) {   
+    public void showGame(GameState gameState) { 
+        System.out.println("Labyrinth:\n " + gameState.Get_labyrinth());
+        System.out.println("Players:\n" + gameState.Get_players());
+        System.out.println("Monsters:\n" + gameState.Get_monsters());
+        System.out.println("Log:\n" + gameState.Get_log()); 
+        System.out.println("Current player: " + gameState.Get_CurrentPlayer());
+        System.out.println("Winner: " + gameState.Get_Winner());
     }
     
 }

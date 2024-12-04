@@ -4,6 +4,7 @@
  */
 package irrgarten;
 
+import java.util.ArrayList;
 import java.util.Random;
 /**
  *
@@ -71,11 +72,11 @@ public class Dice{
         return true;
     }
     
-    public static Directions nextStep(Directions preference, Directions[] validMoves, float intelligence){
+    public static Directions nextStep(Directions preference,ArrayList<Directions> validMoves, float intelligence){
         if (generator.nextFloat() < (intelligence / MAX_INTELLIGENCE)){
             return preference;
         } else{
-            return validMoves[generator.nextInt(validMoves.length)];
+            return validMoves.get(generator.nextInt(validMoves.size()));
         }
     }
 }

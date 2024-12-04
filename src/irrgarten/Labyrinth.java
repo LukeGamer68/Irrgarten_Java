@@ -74,20 +74,6 @@ public class Labyrinth {
         
     }
 
-    public void AddPlayer(char number){
-        Player nuevo= new Player (number ,Dice.RandomIntelligence(),Dice.RandomStrength());
-        
-        boolean encontrado=false;
-        
-         for(int i=0;i< this.nRows && !encontrado;i++){
-            for(int j=0;j<this.nCols && !encontrado;j++){
-                if(labyrinth[i][j]==Labyrinth.EMPTY_CHAR )
-                    labyrinth[i][j]=number;
-                    encontrado=true;
-                    players[i][j]=nuevo;
-            }
-         }
-    }
     public void SpreadPlayers(Player players[]){
         for(int i=0; i< this.nRows;i++){
             for(int j=0;j< this.nCols;j++){
@@ -120,9 +106,13 @@ public class Labyrinth {
     }
     
     public void AddMonster(int row, int col, Monster monster){
-        if(labyrinth[row][col]==Labyrinth.EMPTY_CHAR){
-            monsters[row][col]=monster;
-            monsters[row][col].SetPos(row, col);
+         if(CanStepOn(row, col)){
+            monsters[row][col]= monster;
+            if (players[row][col]!= null){
+                labyrinth[row][col] = COMBAT_CHAR;
+            } else{
+                labyrinth[row][col] = MONSTER_CHAR;
+            }
         }
             
     }
@@ -211,13 +201,21 @@ public class Labyrinth {
     }
     
     private void UpdateOldPost(int row, int col){
-        if(PosOk(row,col))
-            if(CombatPos(row,col))
-                labyrinth[row][col]=Labyrinth.MONSTER_CHAR;
-            else
-                labyrinth[row][col]=Labyrinth.EMPTY_CHAR;
+         if (row >= 0 && row < nRows && col >= 0 && col < nCols) {
+            if (labyrinth[row][col]== COMBAT_CHAR){
+                labyrinth[row][col]= MONSTER_CHAR;
+            } else{
+                labyrinth[row][col] = EMPTY_CHAR;
+            }
+             
+         }
     }
-    
+    protected void AddPlayer(Player p){
+        ArrayList<Integer> pos = RandomEmptyPos();
+        p.SetPos(pos.get(0),pos.get(1));
+        this.players[pos.get(0)][pos.get(1)] = p;
+        this.labyrinth[pos.get(0)][pos.get(1)] = p.GetNumber();
+    }
     private ArrayList<Integer> dir2pos(int row, int col, Directions direction){
           ArrayList<Integer> direct = new ArrayList<>();
         

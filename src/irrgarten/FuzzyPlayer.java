@@ -13,7 +13,7 @@ public class FuzzyPlayer extends Player{
             super(other);
         }
         @Override
-        public Directions move(Directions direction, Directions[] validMoves){
+        public Directions move(Directions direction, ArrayList<Directions> validMoves){
             return Dice.nextStep(direction, validMoves, this.getIntelligence());
         }
         @Override

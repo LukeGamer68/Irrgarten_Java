@@ -8,17 +8,33 @@ package irrgarten;
  *
  * @author herna
  */
-public class Monster  extends LabyrinthCharacter{
-    static private int INITIAL_HEALTH = 5;
-   
-    public Monster (String name, float intelligence, float strength){
-        super(name,intelligence,strength,INITIAL_HEALTH);
-    }
+public class Monster extends LabyrinthCharacter{
+    private static int INITIAL_HEALTH  = 5;
     
+    public Monster (String name, float intelligence, float strength){
+        super("Monster :"+ name,intelligence,strength,INITIAL_HEALTH);
+    }
+    @Override
+    public float attack(){
+        return Dice.intensity(getStrength());
+    }
+    @Override
+    public boolean defend(float receivedAttack){
+        if (dead()){
+            return false;
+        }
+        float defensiveEnergy = Dice.intensity(getIntelligence());
+             if (defensiveEnergy < receivedAttack){
+                 gotWounded();
+                 return dead();
+        }
+             return false;
+        } 
     @Override
     public String toString(){
-        String msg = "Mosnter :"+'\n'+super.toString();
-        return msg;
+        return super.toString();
     }
+    
+    
  
 }
