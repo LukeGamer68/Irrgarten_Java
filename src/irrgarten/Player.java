@@ -33,6 +33,8 @@ public class Player {
     //+++++++++++++++++++++//
     private ArrayList<Weapon> weapons;
     private ArrayList<Shield> shields;
+    private ShieldCardDeck shieldCardDeck;
+    private WeaponCardDeck weaponCardDeck;
     
     public Player(char number,float intelligence,float strenght){
         this.consecutivehits = 0;
@@ -109,13 +111,13 @@ public class Player {
         int Wreward = Dice.weaponsReward();
         int Sreward = Dice.shieldsReward();
         
-        for(int i=0 ; i<Wreward;i++){
-            Weapon wnew = new Weapon(Dice.weaponPower(),Dice.usesLeft());
-            this.ReciveWeapon(wnew);
+        for (int i = 0; i <  Wreward; i++){
+            Weapon wnew = weaponCardDeck.nextCard();
+            ReciveWeapon(wnew);
         }
-        for(int j=0 ; j<Sreward;j++){
-            Shield snew = new Shield(Dice.shieldPower(),Dice.usesLeft());
-            this.ReciveShield(snew);
+        for (int i = 0; i < Sreward; i++){
+            Shield snew = shieldCardDeck.nextCard();
+            ReciveShield(snew);
         }
         
         float extrahealth = Dice.healthReward();
@@ -132,8 +134,13 @@ public class Player {
         for(Weapon w: this.weapons){
             msg+=this.weapons.toString();
         }
+<<<<<<< Updated upstream
         for(Shield s: this.shields){
             msg+=this.shields.toString();
+=======
+        if(!shields.isEmpty()){
+            msg+="\nShields: " + shields.toString()+ " Sum Shields: " + sumShields();
+>>>>>>> Stashed changes
         }
         
         return msg;
